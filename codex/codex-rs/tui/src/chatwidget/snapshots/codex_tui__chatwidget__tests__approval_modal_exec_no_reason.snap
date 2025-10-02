@@ -1,0 +1,17 @@
+---
+source: tui/src/chatwidget/tests.rs
+expression: terminal.backend()
+---
+"                                                                                "
+"                                                                                "
+"  Allow command?                                                                "
+"                                                                                "
+"  $ echo hello world                                                            "
+"                                                                                "
+"› 1. Approve and run now          Run this command one time                     "
+"  2. Always approve this session  Automatically approve this command for the    "
+"                                  rest of the session                           "
+"  3. Cancel                       Do not run the command                        "
+"                                                                                "
+"  Press Enter to confirm or Esc to cancel                                       "
+"                                                                                "

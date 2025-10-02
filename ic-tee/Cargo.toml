@@ -1,0 +1,93 @@
+[workspace]
+members = [
+  "src/ic_tee_agent",
+  "src/ic_tee_cdk",
+  "src/ic_tee_cli",
+  "src/ic_tee_daemon",
+  "src/ic_tee_gateway_sdk",
+  "src/ic_tee_host_daemon",
+  "src/ic_tee_identity_canister",
+  "src/ic_tee_logtail",
+  "src/ic_tee_nitro_attestation",
+  "src/ic_tee_nitro_gateway",
+]
+resolver = "2"
+
+[profile.release]
+debug = false
+lto = true
+strip = true
+opt-level = 's'
+
+[workspace.package]
+version = "0.6.5"
+edition = "2021"
+repository = "https://github.com/ldclabs/ic-tee"
+keywords = ["tee", "canister", "icp", "nitro"]
+categories = ["web-programming"]
+license = "MIT OR Apache-2.0"
+
+[workspace.dependencies]
+anyhow = "1"
+axum = { version = "0.8", features = [
+  "http1",
+  "http2",
+  "json",
+  # "macros",
+  "matched-path",
+  "tokio",
+  "query",
+], default-features = true }
+axum-core = "0.5"
+axum-server = { version = "0.7", features = ["tls-rustls"] }
+arc-swap = "1.7"
+http = "1.3"
+bytes = "1"
+base64 = "0.22"
+clap = { version = "4.5", features = ["derive"] }
+candid = "0.10"
+ciborium = "0.2"
+hex = "0.4"
+lazy_static = "1.5"
+serde = "1"
+serde_json = "1"
+serde_bytes = "0.11"
+sha2 = "0.10"
+sha3 = "0.10"
+ic-cdk = "0.18"
+ic-secp256k1 = { version = "0.2" }
+ic-ed25519 = { version = "0.3" }
+ic_auth_types = { version = "0.6" }
+ic_auth_verifier = { version = "0.6" }
+ic-stable-structures = "0.7"
+ic-canister-sig-creation = "1"
+ic-certification = "3"
+ic-agent = "0.44"
+ic_cose_types = "0.9"
+ic_cose = "0.9"
+coset = "0.3"
+x509-parser = { version = "0.17" }
+rand = "0.9"
+tokio = { version = "1", features = ["full"] }
+tokio-util = "0.7"
+tokio-vsock = "0.7"
+aws-nitro-enclaves-nsm-api = "0.4"
+log = "0.4"
+structured-logger = "1"
+hyper-util = { version = "0.1", features = ["client-legacy"] }
+mime = "0.3"
+rustls = "0.23"
+reqwest = { version = "0.12", features = [
+  "rustls-tls",
+  "rustls-tls-native-roots",
+  "json",
+  "gzip",
+  "stream",
+  "http2",
+  # "hickory-dns",
+], default-features = true }
+libc = "0.2"
+thiserror = "2"
+
+[workspace.metadata.cargo-shear]
+ignored = ["ic-dummy-getrandom-for-wasm"]

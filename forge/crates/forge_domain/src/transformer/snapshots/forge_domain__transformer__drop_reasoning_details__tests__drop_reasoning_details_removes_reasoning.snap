@@ -1,0 +1,27 @@
+---
+source: crates/forge_domain/src/transformer/drop_reasoning_details.rs
+expression: snapshot
+---
+transformation: DropReasoningDetails
+before:
+  messages:
+    - text:
+        role: User
+        content: User message with reasoning
+        reasoning_details:
+          - text: I need to think about this
+            signature: ~
+    - text:
+        role: Assistant
+        content: Assistant response with reasoning
+        reasoning_details:
+          - text: I need to think about this
+            signature: ~
+after:
+  messages:
+    - text:
+        role: User
+        content: User message with reasoning
+    - text:
+        role: Assistant
+        content: Assistant response with reasoning

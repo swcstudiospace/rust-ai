@@ -1,0 +1,28 @@
+[package]
+name = "forge_api"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+forge_domain.workspace = true
+forge_stream.workspace = true
+forge_services.workspace = true
+
+forge_infra.workspace = true
+
+
+
+
+
+
+
+
+forge_app.workspace = true
+
+[dev-dependencies]
+
+tokio = { workspace = true }
+
+

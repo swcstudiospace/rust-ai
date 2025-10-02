@@ -1,0 +1,36 @@
+[package]
+name = "anda_db_hnsw"
+description = "A high-performance vector search library in Rust."
+repository = "https://github.com/ldclabs/anda_db/tree/main/rs/anda_db_hnsw"
+version = "0.4.7"
+publish = true
+edition.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+
+[dependencies]
+ciborium = { workspace = true }
+croaring = { workspace = true }
+futures = { workspace = true }
+rand = { workspace = true }
+ordered-float = { workspace = true }
+half = { workspace = true }
+ndarray = { workspace = true }
+serde = { workspace = true }
+smallvec = { workspace = true, features = ["serde", "const_new"] }
+parking_lot = { workspace = true }
+papaya = { workspace = true, features = ["serde"] }
+thiserror = { workspace = true }
+log = { workspace = true }
+rustc-hash = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["full"] }
+structured-logger = { workspace = true }
+# https://github.com/rust-ndarray/ndarray?tab=readme-ov-file#how-to-enable-blas-integration
+# ndarray = { workspace = true, features = ["blas"] }
+# blas-src = { workspace = true, features = ["accelerate"] }
+
+[[example]]
+name = "hnsw_demo"

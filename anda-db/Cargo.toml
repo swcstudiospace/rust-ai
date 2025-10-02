@@ -1,0 +1,74 @@
+[workspace]
+resolver = "2"
+members = [
+  "rs/anda_cognitive_nexus",
+  "rs/anda_db",
+  "rs/anda_db_btree",
+  "rs/anda_db_derive",
+  "rs/anda_db_hnsw",
+  "rs/anda_db_schema",
+  "rs/anda_db_tfs",
+  "rs/anda_db_utils",
+  "rs/anda_kip",
+  "rs/anda_object_store",
+]
+
+[workspace.package]
+description = "Anda DB is a Rust library designed as a specialized database for AI Agents, focusing on knowledge & memory."
+repository = "https://github.com/ldclabs/anda_db"
+homepage = "https://github.com/ldclabs/anda_db"
+keywords = ["ai-agent", "object_store", "hnsw", "database"]
+categories = [
+  "accessibility",
+  "web-programming",
+  "development-tools",
+  "text-processing",
+]
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+aes-gcm = "0.10"
+async-trait = "0.1"
+async-stream = "0.3"
+bytes = "1"
+base64 = "0.22"
+hex = "0.4"
+croaring = "2.3"
+chrono = "0.4"
+futures = { version = "0.3" }
+tokio = { version = "1" }
+tokio-util = { version = "0.7" }
+ciborium = "0.2"
+dashmap = "6.1"
+rand = "0.9"
+ordered-float = "5"
+ndarray = { version = "0.16" }
+blas-src = { version = "0.11" }
+half = { version = "2.6", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_bytes = "0.11"
+serde_json = "1"
+sha3 = "0.10"
+thiserror = "2"
+parking_lot = "0.12"
+papaya = { version = "0.2" }
+log = { version = "0.4", features = ["kv", "kv_serde"] }
+tantivy = "0.25"
+tantivy-tokenizer-api = "0.6"
+tantivy-jieba = "0.17"
+structured-logger = "1"
+smallvec = "1.15"
+criterion = "0.7"
+ic_auth_types = { version = "0.6" }
+object_store = { version = "0.12" }
+moka = { version = "0.12", features = ["future"] }
+zstd-safe = "7"
+async-compression = { version = "0.4", features = ["tokio", "zstd"] }
+nom = "8"
+nom-language = "0.1"
+regex = "1.11"
+rustc-hash = "2"
+
+[workspace.metadata.cargo-shear]
+ignored = ["blas-src"]

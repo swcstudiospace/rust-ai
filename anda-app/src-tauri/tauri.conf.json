@@ -1,0 +1,163 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Anda AI",
+  "version": "0.3.10",
+  "identifier": "ai.anda.app",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../build"
+  },
+  "app": {
+    "enableGTKAppId": false,
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Anda AI",
+        "width": 1024,
+        "height": 800,
+        "decorations": true,
+        "hiddenTitle": false,
+        "visibleOnAllWorkspaces": false,
+        "alwaysOnTop": false,
+        "titleBarStyle": "Transparent",
+        "acceptFirstMouse": true,
+        "create": true,
+        "devtools": true,
+        "url": "/app/assistant"
+      },
+      {
+        "label": "settings",
+        "title": "Anda AI - Settings",
+        "width": 1024,
+        "height": 800,
+        "decorations": true,
+        "hiddenTitle": false,
+        "visibleOnAllWorkspaces": false,
+        "alwaysOnTop": false,
+        "titleBarStyle": "Transparent",
+        "minimizable": false,
+        "create": false,
+        "devtools": true,
+        "url": "/settings"
+      },
+      {
+        "label": "update",
+        "title": "Anda AI - Update",
+        "width": 480,
+        "height": 320,
+        "decorations": true,
+        "hiddenTitle": false,
+        "visibleOnAllWorkspaces": false,
+        "alwaysOnTop": false,
+        "titleBarStyle": "Transparent",
+        "minimizable": false,
+        "create": false,
+        "devtools": true,
+        "url": "/update"
+      }
+    ],
+    "security": {
+      "assetProtocol": {
+        "enable": false,
+        "scope": []
+      },
+      "capabilities": [
+        "default",
+        "desktop-capability"
+      ],
+      "dangerousDisableAssetCspModification": false,
+      "freezePrototype": false,
+      "pattern": {
+        "use": "brownfield"
+      }
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "mobile": [
+        {
+          "host": "anda.ai",
+          "pathPrefix": [
+            "/deeplink"
+          ]
+        }
+      ],
+      "desktop": {
+        "schemes": [
+          "anda",
+          "anda-ai"
+        ]
+      }
+    },
+    "deep-link-service": {
+      "signInEndpoint": "https://dmsg.net/_/oauth/deeplink"
+    },
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEFDOEM5MDM4OTg3QkIxQTIKUldTaXNYdVlPSkNNckhXc0ZmT3FiQUVRZFQwREhvenFudENDMHFZMWVTUjFQSHhtKzEvYlV4bncK",
+      "endpoints": [
+        "https://github.com/ldclabs/anda-app/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "createUpdaterArtifacts": true,
+    "category": "Productivity",
+    "shortDescription": "Anda AI",
+    "targets": [
+      "nsis",
+      "dmg",
+      "app",
+      "appimage",
+      "deb",
+      "rpm"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico",
+      "icons/icon.png",
+      "icons/Square30x30Logo.png",
+      "icons/Square44x44Logo.png",
+      "icons/Square71x71Logo.png",
+      "icons/Square89x89Logo.png",
+      "icons/Square107x107Logo.png",
+      "icons/Square142x142Logo.png",
+      "icons/Square150x150Logo.png",
+      "icons/Square284x284Logo.png",
+      "icons/Square310x310Logo.png",
+      "icons/StoreLogo.png"
+    ],
+    "iOS": {
+      "developmentTeam": "S9Z2WAMAV8"
+    },
+    "macOS": {
+      "minimumSystemVersion": "12.0",
+      "hardenedRuntime": true,
+      "entitlements": "./Entitlements.plist",
+      "signingIdentity": "Developer ID Application: LDC Labs Limited (S9Z2WAMAV8)",
+      "providerShortName": "Anda",
+      "dmg": {
+        "appPosition": {
+          "x": 180,
+          "y": 180
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 180
+        }
+      }
+    },
+    "resources": [
+      "icons"
+    ]
+  }
+}

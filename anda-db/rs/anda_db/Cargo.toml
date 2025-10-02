@@ -1,0 +1,54 @@
+[package]
+name = "anda_db"
+version = "0.7.1"
+description = "Anda DB is a Rust library designed as a specialized database for AI Agents, focusing on knowledge & memory."
+keywords = ["database", "vector", "search", "embedding", "ai"]
+categories = ["database", "data-structures", "text-processing"]
+repository = "https://github.com/ldclabs/anda_db/tree/main/rs/anda_db"
+publish = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anda_db_utils = { version = "0.2", path = "../anda_db_utils" }
+anda_db_schema = { path = "../anda_db_schema", version = "0.4" }
+anda_db_hnsw = { path = "../anda_db_hnsw", version = "0.4" }
+anda_db_btree = { path = "../anda_db_btree", version = "0.5" }
+anda_db_tfs = { path = "../anda_db_tfs", version = "0.5", features = ["full"] }
+bytes = { workspace = true }
+ciborium = { workspace = true }
+croaring = { workspace = true }
+futures = { workspace = true }
+log = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+parking_lot = { workspace = true }
+tokio = { workspace = true, features = ["sync", "parking_lot", "io-util"] }
+tokio-util = { workspace = true }
+ic_auth_types = { workspace = true, features = ["xid"] }
+object_store = { workspace = true }
+moka = { workspace = true }
+zstd-safe = { workspace = true }
+async-compression = { workspace = true }
+tantivy = { workspace = true, optional = true }
+tantivy-jieba = { workspace = true, optional = true }
+rustc-hash = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["full"] }
+structured-logger = { workspace = true }
+anda_object_store = { path = "../anda_object_store", version = "0.2" }
+serde_json = { workspace = true }
+
+[features]
+default = []
+full = ["tantivy", "tantivy-jieba"]
+tantivy = ["dep:tantivy"]
+tantivy-jieba = ["dep:tantivy-jieba", "dep:tantivy"]
+
+[[example]]
+name = "db_demo"
+required-features = ["full"]
+
+[package.metadata.cargo-shear]
+ignored = ["tantivy", "tantivy-jieba"]

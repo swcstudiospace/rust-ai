@@ -1,0 +1,19 @@
+---
+source: tui/src/chatwidget/tests.rs
+expression: terminal.backend()
+---
+"                                                                                "
+"                                                                                "
+"  Apply changes?                                                                "
+"                                                                                "
+"  README.md (+2 -0)                                                             "
+"      1     +hello                                                              "
+"      2     +world                                                              "
+"                                                                                "
+"  The model wants to apply changes                                              "
+"                                                                                "
+"› 1. Approve  Apply the proposed changes                                        "
+"  2. Cancel   Do not apply the changes                                          "
+"                                                                                "
+"  Press Enter to confirm or Esc to cancel                                       "
+"                                                                                "

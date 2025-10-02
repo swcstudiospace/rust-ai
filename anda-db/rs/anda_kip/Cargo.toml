@@ -1,0 +1,22 @@
+[package]
+name = "anda_kip"
+version = "0.5.15"
+description = "A Rust SDK of KIP (Knowledge Interaction Protocol) for building sustainable AI knowledge memory systems."
+keywords = ["KIP", "knowledge-graph", "Persistent-Memory", "AGI", "AI-Agent"]
+categories = ["database", "data-structures", "text-processing"]
+repository = "https://github.com/ldclabs/anda_db/tree/main/rs/anda_kip"
+publish = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+nom = { workspace = true }
+nom-language = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["full"] }

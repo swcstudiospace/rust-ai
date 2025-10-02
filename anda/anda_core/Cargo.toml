@@ -1,0 +1,34 @@
+[package]
+name = "anda_core"
+description = "Core types and traits for Anda -- an AI agent framework built with Rust, powered by ICP and TEEs."
+repository = "https://github.com/ldclabs/anda/tree/main/anda_core"
+publish = true
+version.workspace = true
+edition.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait = { workspace = true }
+anda_db_schema = { workspace = true }
+candid = { workspace = true }
+bytes = { workspace = true }
+ciborium = { workspace = true }
+chrono = { workspace = true }
+futures = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_bytes = { workspace = true }
+http = { workspace = true }
+thiserror = { workspace = true }
+object_store = { workspace = true }
+ic_auth_types = { workspace = true }
+ic_cose_types = { workspace = true }
+ic-oss-types = { workspace = true }
+tokio-util = { workspace = true }
+reqwest = { workspace = true }
+schemars = { workspace = true }
+xid = { workspace = true, optional = true }
+
+[dev-dependencies]

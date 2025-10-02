@@ -1,0 +1,27 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": [
+    "main",
+    "settings",
+    "update"
+  ],
+  "permissions": [
+    "core:default",
+    "core:event:default",
+    "os:default",
+    "log:default",
+    "opener:default",
+    "deep-link:default",
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled",
+    "dialog:default",
+    "fs:allow-public-read",
+    "fs:allow-home-read",
+    "fs:allow-download-read",
+    "fs:allow-document-read",
+    "fs:allow-desktop-read"
+  ]
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport" />
+  <title>Anda.AI - Infrastructure for Autonomous AI Agents</title>
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Load Google Fonts in a non-blocking way -->
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap">
+  <link rel="stylesheet" media="print" onload="this.media='all'"
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Roboto:wght@300;400;500;700&display=swap">
+  <link rel="stylesheet" href="/_assets/css/landing.css">
+  <style>
+    .logo {
+      transform: scale(1.6) translateY(-20px);
+    }
+
+    .redirect {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      max-width: 480px;
+      text-align: center;
+      gap: 20px;
+    }
+
+    .status {
+      font-size: 1.25rem;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 20px;
+    }
+
+    .buttons .btn {
+      width: fit-content;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="anda-poetry"></canvas>
+  <div class="stars-container">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+  </div>
+
+  <div class="container redirect">
+    <div class="logo">
+      <img src="/_assets/images/logo.svg" alt="Anda.AI Logo"><span>Anda.AI</span>
+    </div>
+
+    <div class="status">
+      <div class="spinner"></div>
+      <span class="status-text">Launching your AI Agent assistant...</span>
+    </div>
+
+    <div class="buttons">
+      <a id="open-app" class="btn btn-primary" target="_self">Open in Anda AI App</a>
+      <a href="https://anda.ai" class="btn btn-primary">Visit Website</a>
+    </div>
+  </div>
+
+  <script>
+    const statusElement = document.querySelector('.status-text')
+    const search = new URLSearchParams(window.location.search)
+    const nextUrl = window.location.href.replace(/^.*deeplink/i, "anda://deeplink")
+    const openBtn = document.getElementById('open-app')
+    const delegationStore = 'https://asxpf-ciaaa-aaaap-an33a-cai.icp0.io/delegation'
+
+    async function handleDelegation() {
+      // https://anda.ai/deeplink/?os=macos&action=SignIn#pGFhYGFkgqJhZKJhZRs..1gteG
+      if (search.get('action') !== 'SignIn') return
+      const payload = window.location.hash.slice(1)  // Skip leading '#'
+
+      const res = await fetch(delegationStore, {
+        method: 'POST',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payload })
+      }).then(r => r.json())
+
+      let counter = 0
+      const pubkey = res.result.replaceAll('=', '')  // Remove trailing '='
+
+      await new Promise(r => setTimeout(r, 3000))
+      try {
+        const r = await fetch(delegationStore + `?pubkey=${pubkey}`, {
+          method: 'GET',
+          mode: 'cors',
+          headers: { 'Accept': 'application/json' },
+        }).then(r => r.json())
+        statusElement.textContent = 'Signed in to Anda AI App. You may now close this page'
+      } catch (e) {
+        console.warn(e)
+      }
+    }
+
+    // Copy text to clipboard with secure-context API and a fallback for older browsers.
+    function copyTextToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text).then(() => true).catch(() => false)
+      }
+      try {
+        const ta = document.createElement('textarea')
+        ta.value = text
+        ta.setAttribute('readonly', '')
+        ta.style.position = 'fixed'
+        ta.style.top = '-9999px'
+        document.body.appendChild(ta)
+        ta.select()
+        const ok = document.execCommand('copy')
+        document.body.removeChild(ta)
+        return Promise.resolve(ok)
+      } catch (e) {
+        return Promise.resolve(false)
+      }
+    }
+
+    // Prepare anchor with deeplink href and handle UX hints without blocking default navigation.
+    if (openBtn && openBtn.tagName === 'A') {
+      openBtn.setAttribute('href', nextUrl)
+
+      openBtn.addEventListener('click', () => {
+        // Observe if the page gets hidden (likely app switch), to infer success.
+        let switched = false
+        const onVisibility = () => {
+          if (document.visibilityState === 'hidden') {
+            switched = true
+            statusElement.textContent = 'Opening Anda AI app...'
+          }
+        }
+        document.addEventListener('visibilitychange', onVisibility, { once: true })
+
+        // Copy deeplink for manual paste if needed; do not prevent default navigation.
+        copyTextToClipboard(nextUrl).then((ok) => {
+          if (ok && !switched) {
+            statusElement.textContent = 'Opening Anda AI app... The link has been copied to your clipboard. If it does not open, paste it in the Anda.AI app.'
+          }
+        })
+
+        // // Fallback message if nothing happened after a few seconds.
+        // setTimeout(() => {
+        //   if (!switched) {
+        //     statusElement.textContent = 'If the app did not launch, please open the Anda AI app manually or visit our website for help'
+        //   }
+        // }, 5000)
+      })
+    }
+
+    // Platform detection
+    // const isEdge = () => /Edg\//.test(navigator.userAgent)
+    // const isMacOS = () => (navigator.platform && navigator.platform.toLowerCase().includes('mac')) || /Macintosh|Mac OS X/.test(navigator.userAgent)
+
+    // Auto-attempt on macOS (excluding Edge which often blocks non-gesture external protocol navigations)
+    if (search.get('os') == 'windows') {
+      handleDelegation().catch(console.error)
+    } else {
+      // optional, if deeplink works, we don't need to handle delegation
+      handleDelegation().catch(console.error)
+      let switchedAuto = false
+      const onVisibilityAuto = () => {
+        if (document.visibilityState === 'hidden') {
+          switchedAuto = true
+          statusElement.textContent = 'Opening Anda.AI app...'
+        }
+      }
+      document.addEventListener('visibilitychange', onVisibilityAuto, { once: true })
+
+      setTimeout(() => {
+        try {
+          window.location.assign(nextUrl)
+        } catch (err) {
+          console.error('Error redirecting to desktop app (auto):', err)
+        }
+
+        setTimeout(() => {
+          if (!switchedAuto) {
+            statusElement.textContent = 'If the app did not launch, please click the button'
+          }
+        }, 3000)
+      }, 200)
+    }
+  </script>
+  <script src="/_assets/js/landing.js"></script>
+
+</body>
+
+</html>

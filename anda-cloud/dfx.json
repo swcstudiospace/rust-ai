@@ -1,0 +1,38 @@
+{
+  "canisters": {
+    "anda_registry_canister": {
+      "candid": "rs/anda_registry_canister/anda_registry_canister.did",
+      "declarations": {
+        "bindings": [
+          "ts",
+          "did",
+          "mo"
+        ],
+        "node_compatibility": true,
+        "output": "declarations/anda_registry_canister"
+      },
+      "package": "anda_registry_canister",
+      "optimize": "cycles",
+      "type": "rust"
+    },
+    "anda_cloud_website": {
+      "dependencies": [],
+      "build": [
+        "echo 'Disable dfx build for anda_cloud_website'"
+      ],
+      "source": [
+        "ts/anda_cloud_website/build"
+      ],
+      "type": "assets",
+      "workspace": "anda_cloud_website"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}

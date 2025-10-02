@@ -1,0 +1,159 @@
+use candid::Principal;
+use ic_agent::Identity;
+use ic_auth_types::{ByteArrayB64, ByteBufB64, SignedDelegationCompact};
+use ic_auth_verifier::{
+    envelope::verify_delegation_chain,
+    identity::{BasicIdentity, DelegatedIdentity, signed_delegation_from},
+    unix_timestamp,
+};
+use ic_cose_types::cose::kdf::{derive_a256gcm_key, hkdf256};
+use serde::{Deserialize, Serialize};
+use tauri::Theme;
+
+use crate::utils::SensitiveData;
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct AppState {
+    pub os_arch: String,
+    pub os_platform: String,
+    pub settings: Settings,
+    pub seed: SensitiveData<ByteArrayB64<32>>,
+}
+
+impl AppState {
+    pub fn to_client_state(&self, salt: Option<&[u8]>) -> AppState {
+        let seed = hkdf256(self.seed.as_slice(), salt, &[]);
+        AppState {
+            os_arch: self.os_arch.clone(),
+            os_platform: self.os_platform.clone(),
+            settings: self.settings.clone(),
+            seed: SensitiveData(seed.into()),
+        }
+    }
+
+    pub fn derive_a256gcm_key(&self, salt: &[u8]) -> [u8; 32] {
+        derive_a256gcm_key(self.seed.as_slice(), Some(salt))
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct Settings {
+    pub locale: String,
+    pub theme: Option<Theme>, // "light" | "dark"
+    pub https_proxy: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SecretState {
+    pub session_secret: SensitiveData<ByteArrayB64<32>>, // ed25519 private key
+    pub auth: Option<InternetIdentityAuth>,
+    pub assistant: Option<AssistantConfig>,
+}
+
+impl SecretState {
+    pub fn session_pubkey(&self) -> ByteBufB64 {
+        let session = BasicIdentity::from_raw_key(&self.session_secret);
+        session.public_key().unwrap().into()
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+pub struct InternetIdentityAuth {
+    pub user_pubkey: ByteBufB64,
+    pub delegations: Vec<SignedDelegationCompact>,
+    pub authn_method: String, // "pin" | "passkey" | "recovery" | "dMsg"
+    pub origin: String,       // "https://dmsg.net" | "https://panda.fans"
+}
+
+impl InternetIdentityAuth {
+    pub fn principal(&self) -> Principal {
+        Principal::self_authenticating(self.user_pubkey.as_slice())
+    }
+
+    pub fn to_identity(&self, session_secret: [u8; 32]) -> Result<DelegatedIdentity, String> {
+        let session = BasicIdentity::from_raw_key(&session_secret);
+        let session_pubkey = session.public_key().unwrap();
+        verify_delegation_chain(
+            &self.user_pubkey,
+            session_pubkey.as_slice(),
+            &self.delegations,
+            unix_timestamp().as_millis() as u64,
+            None,
+        )?;
+        let id = DelegatedIdentity::new_unchecked(
+            self.user_pubkey.to_vec(),
+            Box::new(session),
+            self.delegations
+                .clone()
+                .into_iter()
+                .map(|d| signed_delegation_from(d.into()))
+                .collect(),
+        );
+
+        Ok(id)
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ModelProvider {
+    pub model: String,
+    pub api_key: String,
+    pub api_base: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AssistantConfig {
+    pub root_secret: SensitiveData<ByteArrayB64<48>>, // root private key
+    #[serde(default)]
+    pub preferred_provider: String, // preferred model provider, e.g., "gemini", "openai"
+    pub gemini: Option<ModelProvider>,
+    pub deepseek: Option<ModelProvider>,
+    pub xai: Option<ModelProvider>,
+    pub openai: Option<ModelProvider>,
+}
+
+impl AssistantConfig {
+    pub fn get_max_input_tokens(&self) -> usize {
+        match self.preferred_provider.as_str() {
+            "deepseek" => 128 * 1000,
+            "gemini" => 1000 * 1000,
+            "openai" => 400 * 1000,
+            "xai" => 256 * 1000,
+            _ => 64 * 1000,
+        }
+    }
+
+    pub fn get_provider(&self) -> Option<(&str, &ModelProvider)> {
+        match self.preferred_provider.as_str() {
+            "deepseek" => self.deepseek.as_ref().and_then(|p| {
+                if p.api_key.is_empty() {
+                    None
+                } else {
+                    Some(("deepseek", p))
+                }
+            }),
+            "gemini" => self.gemini.as_ref().and_then(|p| {
+                if p.api_key.is_empty() {
+                    None
+                } else {
+                    Some(("gemini", p))
+                }
+            }),
+            "openai" => self.openai.as_ref().and_then(|p| {
+                if p.api_key.is_empty() {
+                    None
+                } else {
+                    Some(("openai", p))
+                }
+            }),
+            "xai" => self.xai.as_ref().and_then(|p| {
+                if p.api_key.is_empty() {
+                    None
+                } else {
+                    Some(("xai", p))
+                }
+            }),
+            _ => None,
+        }
+    }
+}
